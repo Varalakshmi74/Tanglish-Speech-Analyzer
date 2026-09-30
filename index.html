@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tanglish Speech Analyzer | AI-Powered Tamil + English NLP Platform</title>
+    <meta name="description" content="State-of-the-art AI analyzer for Tamil + English (Tanglish) speech and text. Get instant speech-to-text, code-switching metrics, filler detection, and communication insights.">
+    <meta name="keywords" content="Tanglish, Speech Analyzer, Tamil English NLP, Speech to Text, Code-Switching, Language Processing">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+    
+    <!-- Main Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+    <!-- Interactive Background Canvas for Particles -->
+    <canvas id="bgCanvas" class="bg-canvas"></canvas>
+    
+    <!-- Ambient Gradient Orbs -->
+    <div class="ambient-glow glow-pink"></div>
+    <div class="ambient-glow glow-purple"></div>
+    <div class="ambient-glow glow-blue"></div>
+
+    <!-- Notification Toast Container -->
+    <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+    <!-- App Container -->
+    <div class="app-wrapper">
+        
+        <!-- SIDEBAR NAVIGATION -->
+        <aside class="app-sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-logo">
+                    <div class="logo-icon-wrap">
+                        <i class="fa-solid fa-wave-square logo-icon"></i>
+                        <span class="logo-pulse"></span>
+                    </div>
+                    <div class="brand-text">
+                        <span class="brand-title">Tanglish<span class="gradient-text">AI</span></span>
+                        <span class="brand-tag">Speech & NLP v2.4</span>
+                    </div>
+                </div>
+                <button class="sidebar-close-btn" id="sidebarCloseBtn" aria-label="Close Sidebar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Quick Status Pill -->
+            <div class="sidebar-status-box">
+                <div class="status-indicator online"></div>
+                <div class="status-info">
+                    <span class="status-title">NLP Engine Active</span>
+                    <span class="status-desc" id="engineModeText">Tamil + English (Tanglish)</span>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="sidebar-nav">
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <button class="nav-link active" data-tab="dashboard-view" id="navDashboard">
+                            <i class="fa-solid fa-chart-pie nav-icon"></i>
+                            <span class="nav-text">Dashboard</span>
+                            <span class="nav-badge">Live</span>
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-tab="speech-view" id="navSpeech">
+                            <i class="fa-solid fa-microphone-lines nav-icon"></i>
+                            <span class="nav-text">Speech Analyzer</span>
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-tab="text-view" id="navText">
+                            <i class="fa-solid fa-file-lines nav-icon"></i>
+                            <span class="nav-text">Text Analyzer</span>
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-tab="analytics-view" id="navAnalytics">
+                            <i class="fa-solid fa-chart-simple nav-icon"></i>
+                            <span class="nav-text">Analytics</span>
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-tab="history-view" id="navHistory">
+                            <i class="fa-solid fa-clock-rotate-left nav-icon"></i>
+                            <span class="nav-text">History</span>
+                            <span class="history-count-badge" id="historyCounter">0</span>
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-tab="settings-view" id="navSettings">
+                            <i class="fa-solid fa-sliders nav-icon"></i>
+                            <span class="nav-text">Settings</span>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Sidebar Footer Quick Tip -->
+            <div class="sidebar-footer">
+                <div class="quick-tip-card">
+                    <div class="tip-header">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                        <span>Tanglish Pro Tip</span>
+                    </div>
+                    <p class="tip-body">Code-switching reflects natural bilingual thought flow. Keep filler words under 5% for crisp articulation!</p>
+                </div>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="app-main">
+            <!-- TOP NAVBAR -->
+            <header class="app-topbar">
+                <div class="topbar-left">
+                    <button class="mobile-toggle-btn" id="mobileMenuBtn" aria-label="Toggle Menu">
+                        <i class="fa-solid fa-bars-staggered"></i>
+                    </button>
+                    <div class="breadcrumbs">
+                        <span class="crumb-root"><i class="fa-solid fa-layer-group"></i> Tanglish NLP</span>
+                        <span class="crumb-separator">/</span>
+                        <span class="crumb-active" id="currentSectionTitle">Dashboard</span>
+                    </div>
+                </div>
+
+                <div class="topbar-right">
+                    <!-- Quick Example Action Pill -->
+                    <button class="quick-action-btn" id="quickSampleBtn" title="Load a sample sentence">
+                        <i class="fa-solid fa-dice"></i>
+                        <span>Random Sample</span>
+                    </button>
+                    
+                    <button class="quick-action-btn primary-glow" id="headerNewRecordBtn" title="Start Voice Recording">
+                        <i class="fa-solid fa-microphone"></i>
+                        <span>Record Voice</span>
+                    </button>
+
+                    <!-- Language Accent Toggle -->
+                    <div class="lang-selector-pill" title="Target Engine Language">
+                        <span class="flag-icon">🇮🇳</span>
+                        <span class="lang-code">TA-EN Mix</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- VIEW CONTAINER -->
+            <div class="content-container">
+
+                <!-- 1. DASHBOARD & HERO VIEW -->
+                <section class="view-section active" id="dashboard-view">
+                    
+                    <!-- HERO SECTION -->
+                    <div class="hero-banner">
+                        <div class="hero-content">
+                            <div class="hero-badge">
+                                <span class="badge-sparkle"><i class="fa-solid fa-sparkles"></i> Next-Gen NLP Model</span>
+                                <span class="badge-tag">Tamil + English Bilingual AI</span>
+                            </div>
+                            <h1 class="hero-title">
+                                Tanglish Speech <span class="gradient-text">Analyzer</span>
+                            </h1>
+                            <p class="hero-subtitle">
+                                “Analyze your Tamil + English speech with AI.”
+                            </p>
+                            <p class="hero-description">
+                                Speak naturally in Tanglish. Our analyzer converts your speech into text and reveals your language patterns, vocabulary balance, conversational fillers, and communication insights with precision.
+                            </p>
+                            
+                            <div class="hero-actions">
+                                <button class="btn btn-hero-primary" id="heroSpeakBtn">
+                                    <span class="btn-icon"><i class="fa-solid fa-microphone-lines"></i></span>
+                                    <span>🎙️ Start Speaking</span>
+                                    <span class="btn-glow"></span>
+                                </button>
+                                <button class="btn btn-hero-secondary" id="heroTextBtn">
+                                    <span class="btn-icon"><i class="fa-solid fa-keyboard"></i></span>
+                                    <span>⌨️ Analyze Text</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Animated AI Waveform Visualizer Card -->
+                        <div class="hero-visualizer-card glass-card">
+                            <div class="visualizer-header">
+                                <div class="viz-status">
+                                    <span class="live-pulse"></span>
+                                    <span class="viz-status-text">AI Audio Spectrum</span>
+                                </div>
+                                <div class="viz-actions">
+                                    <span class="tech-tag">Web Audio API</span>
+                                </div>
+                            </div>
+                            
+                            <div class="hero-canvas-wrap">
+                                <canvas id="heroWaveformCanvas" width="400" height="140"></canvas>
+                                <div class="spectrum-center-circle">
+                                    <i class="fa-solid fa-brain"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="hero-metric-row">
+                                <div class="hero-mini-stat">
+                                    <span class="stat-lbl">Detection</span>
+                                    <span class="stat-val gradient-pink">Realtime</span>
+                                </div>
+                                <div class="hero-mini-stat">
+                                    <span class="stat-lbl">Mixed Lexicon</span>
+                                    <span class="stat-val gradient-purple">12,000+ Words</span>
+                                </div>
+                                <div class="hero-mini-stat">
+                                    <span class="stat-lbl">NLP Precision</span>
+                                    <span class="stat-val gradient-blue">96.4%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- QUICK STATS DASHBOARD SUMMARY -->
+                    <div class="section-title-wrap">
+                        <div class="title-with-icon">
+                            <i class="fa-solid fa-bolt-lightning title-icon"></i>
+                            <div>
+                                <h2 class="section-heading">Quick Analysis Stats</h2>
+                                <p class="section-subtext">Real-time breakdown from your latest Tamil-English communication session</p>
+                            </div>
+                        </div>
+                        <button class="btn-text-action" id="dashViewFullAnalytics">
+                            <span>Detailed Analytics</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <div class="quick-stats-grid">
+                        <div class="stat-card glass-card stat-cyan">
+                            <div class="stat-icon-wrap">
+                                <i class="fa-solid fa-font"></i>
+                            </div>
+                            <div class="stat-body">
+                                <span class="stat-label">Total Words</span>
+                                <div class="stat-number-wrap">
+                                    <span class="stat-value" id="quickStatTotalWords">16</span>
+                                    <span class="stat-delta positive"><i class="fa-solid fa-arrow-up"></i> Words</span>
+                                </div>
+                                <span class="stat-footnote">Full sentence length</span>
+                            </div>
+                            <div class="stat-glow"></div>
+                        </div>
+
+                        <div class="stat-card glass-card stat-pink">
+                            <div class="stat-icon-wrap">
+                                <i class="fa-solid fa-language"></i>
+                            </div>
+                            <div class="stat-body">
+                                <span class="stat-label">Tamil Words</span>
+                                <div class="stat-number-wrap">
+                                    <span class="stat-value" id="quickStatTamilWords">8</span>
+                                    <span class="stat-ratio-pill" id="quickStatTamilRatio">50%</span>
+                                </div>
+                                <span class="stat-footnote">Root Tamil & Tanglish terms</span>
+                            </div>
+                            <div class="stat-glow"></div>
+                        </div>
+
+                        <div class="stat-card glass-card stat-purple">
+                            <div class="stat-icon-wrap">
+                                <i class="fa-solid fa-earth-americas"></i>
+                            </div>
+                            <div class="stat-body">
+                                <span class="stat-label">English Words</span>
+                                <div class="stat-number-wrap">
+                                    <span class="stat-value" id="quickStatEnglishWords">5</span>
+                                    <span class="stat-ratio-pill" id="quickStatEnglishRatio">31%</span>
+                                </div>
+                                <span class="stat-footnote">Standard English vocabulary</span>
+                            </div>
+                            <div class="stat-glow"></div>
+                        </div>
+
+                        <div class="stat-card glass-card stat-blue">
+                            <div class="stat-icon-wrap">
+                                <i class="fa-solid fa-arrows-rotate"></i>
+                            </div>
+                            <div class="stat-body">
+                                <span class="stat-label">Code Switching</span>
+                                <div class="stat-number-wrap">
+                                    <span class="stat-value" id="quickStatCodeSwitch">4</span>
+                                    <span class="stat-tag-pill">Switches</span>
+                                </div>
+                                <span class="stat-footnote">Language transition points</span>
+                            </div>
+                            <div class="stat-glow"></div>
+                        </div>
+
+                        <div class="stat-card glass-card stat-amber">
+                            <div class="stat-icon-wrap">
+                                <i class="fa-solid fa-filter-circle-xmark"></i>
+                            </div>
+                            <div class="stat-body">
+                                <span class="stat-label">Filler Words</span>
+                                <div class="stat-number-wrap">
+                                    <span class="stat-value" id="quickStatFillers">2</span>
+                                    <span class="stat-tag-pill warning" id="quickStatFillerPill">Low</span>
+                                </div>
+                                <span class="stat-footnote">actually, like, apdi, etc.</span>
+                            </div>
+                            <div class="stat-glow"></div>
+                        </div>
+                    </div>
+
+                    <!-- INTERACTIVE TRY AN EXAMPLE BAR -->
+                    <div class="sample-prompts-bar glass-card">
+                        <div class="sample-header">
+                            <div class="sample-title-box">
+                                <i class="fa-solid fa-lightbulb sample-icon"></i>
+                                <div>
+                                    <h3 class="sample-title">Try an Example</h3>
+                                    <p class="sample-subtitle">Click any sample Tanglish sentence to instantly test the analyzer:</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sample-buttons-row">
+                            <button class="sample-btn" data-sample="Naan tomorrow exam-ku prepare pannanum.">
+                                <span class="sample-pill-num">Example 1</span>
+                                <span class="sample-text">“Naan tomorrow exam-ku prepare pannanum.”</span>
+                            </button>
+                            <button class="sample-btn" data-sample="Actually enakku indha project romba interesting-aa irukku.">
+                                <span class="sample-pill-num">Example 2</span>
+                                <span class="sample-text">“Actually enakku indha project romba interesting-aa irukku.”</span>
+                            </button>
+                            <button class="sample-btn" data-sample="College mudichitu I want to start a software job.">
+                                <span class="sample-pill-num">Example 3</span>
+                                <span class="sample-text">“College mudichitu I want to start a software job.”</span>
+                            </button>
+                            <button class="sample-btn" data-sample="Naan exam-ku prepare pannitu irukken but romba tired-aa irukku.">
+                                <span class="sample-pill-num">Example 4</span>
+                                <span class="sample-text">“Naan exam-ku prepare pannitu irukken but romba tired-aa irukku.”</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- QUICK WORKSPACE DUAL WORKBENCH -->
+                    <div class="dashboard-split-grid">
+                        <!-- Quick Speech Card -->
+                        <div class="dash-preview-card glass-card">
+                            <div class="dash-card-header">
+                                <div class="card-title-group">
+                                    <i class="fa-solid fa-microphone-lines icon-gradient-pink"></i>
+                                    <h3>Voice Tanglish Recorder</h3>
+                                </div>
+                                <span class="card-status-tag">Live Mic Ready</span>
+                            </div>
+                            <p class="dash-card-desc">Speak in mixed Tamil and English. Uses Web Speech API with real-time audio waveform analyzer.</p>
+                            <div class="dash-action-box">
+                                <button class="btn btn-primary" id="dashGoToSpeechBtn">
+                                    <i class="fa-solid fa-microphone"></i>
+                                    <span>Open Speech Analyzer</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Quick Text Card -->
+                        <div class="dash-preview-card glass-card">
+                            <div class="dash-card-header">
+                                <div class="card-title-group">
+                                    <i class="fa-solid fa-keyboard icon-gradient-purple"></i>
+                                    <h3>Text Tanglish Analyzer</h3>
+                                </div>
+                                <span class="card-status-tag">Realtime NLP</span>
+                            </div>
+                            <p class="dash-card-desc">Type or paste any Tanglish phrase to get instant code-switch metrics, grammar polish & summary.</p>
+                            <div class="dash-action-box">
+                                <button class="btn btn-secondary" id="dashGoToTextBtn">
+                                    <i class="fa-solid fa-file-pen"></i>
+                                    <span>Open Text Analyzer</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </section>
+
+                <!-- 2. SPEECH ANALYZER VIEW -->
+                <section class="view-section" id="speech-view">
+                    <div class="section-title-wrap">
+                        <div class="title-with-icon">
+                            <i class="fa-solid fa-microphone-lines title-icon icon-gradient-pink"></i>
+                            <div>
+                                <h2 class="section-heading">🎙️ Speak in Tanglish</h2>
+                                <p class="section-subtext">Record your voice naturally mixing Tamil and English. Our engine transcribes and analyzes speech dynamics.</p>
+                            </div>
+                        </div>
+                        <div class="header-badges">
+                            <span class="tech-pill" id="speechApiStatusBadge"><i class="fa-solid fa-check"></i> Web Speech API</span>
+                            <span class="tech-pill"><i class="fa-solid fa-chart-line"></i> WPM Tracker</span>
+                        </div>
+                    </div>
+
+                    <!-- Unsupported Browser Notice Banner (Initially Hidden) -->
+                    <div class="alert-banner warning-banner" id="speechErrorBanner" style="display: none;">
+                        <i class="fa-solid fa-triangle-exclamation alert-icon"></i>
+                        <div class="alert-content">
+                            <h4 class="alert-title" id="speechErrorTitle">Speech Recognition Notice</h4>
+                            <p class="alert-desc" id="speechErrorDesc">Microphone access or Web Speech API is not enabled. You can use Text Analysis or try our simulated voice demo.</p>
+                        </div>
+                        <button class="alert-close-btn" onclick="this.parentElement.style.display='none'"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+
+                    <!-- MAIN RECORDING CARD -->
+                    <div class="recording-studio-card glass-card">
+                        <div class="studio-top-info">
+                            <div class="instruction-box">
+                                <span class="instruction-badge"><i class="fa-solid fa-circle-info"></i> Prompt Example</span>
+                                <p class="instruction-text">“Naan tomorrow college-ku poganum because enakku project work irukku.”</p>
+                            </div>
+                            <div class="recording-timer-box" id="recordingTimerBox">
+                                <span class="timer-dot"></span>
+                                <span class="timer-display" id="recordTimer">00:00</span>
+                                <span class="timer-status" id="recordingStatusLabel">Ready to Record</span>
+                            </div>
+                        </div>
+
+                        <!-- LIVE AUDIO VISUALIZER / EQUALIZER -->
+                        <div class="studio-visualizer-container">
+                            <canvas id="liveAudioWaveform" class="studio-canvas" width="800" height="180"></canvas>
+                            <div class="mic-pulsing-center" id="micPulsingCenter">
+                                <div class="mic-glow-ring ring-1"></div>
+                                <div class="mic-glow-ring ring-2"></div>
+                                <div class="mic-glow-ring ring-3"></div>
+                                <div class="mic-icon-bubble">
+                                    <i class="fa-solid fa-microphone" id="micStudioIcon"></i>
+                                </div>
+                            </div>
+                            <div class="listening-text-overlay" id="listeningOverlay">
+                                <span class="pulse-text">Listening to your Tanglish voice...</span>
+                            </div>
+                        </div>
+
+                        <!-- AUDIO CONTROLS BAR -->
+                        <div class="studio-controls-bar">
+                            <div class="controls-left">
+                                <button class="btn btn-record" id="startRecordBtn">
+                                    <i class="fa-solid fa-circle-dot"></i>
+                                    <span>🔴 Start Recording</span>
+                                </button>
+                                <button class="btn btn-stop" id="stopRecordBtn" disabled>
+                                    <i class="fa-solid fa-stop"></i>
+                                    <span>⏹ Stop</span>
+                                </button>
+                            </div>
+
+                            <div class="controls-center">
+                                <!-- Recorded Audio Player (Shown after recording) -->
+                                <div class="audio-player-widget" id="audioPlayerWidget" style="display: none;">
+                                    <button class="btn-player-action" id="playAudioBtn" title="Play recording">
+                                        <i class="fa-solid fa-play" id="playAudioIcon"></i>
+                                    </button>
+                                    <div class="audio-progress-bar-wrap">
+                                        <div class="audio-progress-bar" id="audioProgressBar"></div>
+                                    </div>
+                                    <span class="audio-time-label" id="audioDurationLabel">0:00 / 0:00</span>
+                                    <audio id="recordedAudioElement"></audio>
+                                </div>
+                            </div>
+
+                            <div class="controls-right">
+                                <button class="btn btn-delete" id="deleteRecordBtn" disabled title="Delete current recording">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                    <span>🗑 Delete</span>
+                                </button>
+                                <button class="btn btn-analyze-speech primary-glow" id="analyzeSpeechBtn" disabled>
+                                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                    <span>✨ Analyze</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TRANSCRIPTION RESULT CARD -->
+                    <div class="transcription-card glass-card">
+                        <div class="transcription-header">
+                            <div class="trans-title-group">
+                                <i class="fa-solid fa-quote-left icon-gradient-pink"></i>
+                                <div>
+                                    <h3 class="trans-title">Your Transcription</h3>
+                                    <span class="trans-subtitle">Speech recognized via real-time Tanglish acoustic model</span>
+                                </div>
+                            </div>
+                            <div class="trans-actions">
+                                <button class="btn-pill" id="copySpeechTranscriptionBtn" title="Copy transcript to clipboard">
+                                    <i class="fa-solid fa-copy"></i>
+                                    <span>📋 Copy</span>
+                                </button>
+                                <button class="btn-pill" id="listenTranscriptBtn" title="Text-to-speech replay">
+                                    <i class="fa-solid fa-volume-high"></i>
+                                    <span>🔊 Listen</span>
+                                </button>
+                                <button class="btn-pill" id="speechAnalyzeAgainBtn">
+                                    <i class="fa-solid fa-arrows-rotate"></i>
+                                    <span>🔄 Analyze Again</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="transcription-body">
+                            <textarea id="speechTranscriptionText" class="transcription-textarea" placeholder="Your speech will appear here automatically when you speak, or you can edit it directly..."></textarea>
+                        </div>
+
+                        <div class="transcription-footer">
+                            <div class="speech-metrics-bar">
+                                <span class="sp-stat"><i class="fa-solid fa-stopwatch"></i> Duration: <strong id="spDurationText">0.0s</strong></span>
+                                <span class="sp-stat"><i class="fa-solid fa-gauge-high"></i> Est. Speed: <strong id="spWpmText">0 WPM</strong></span>
+                                <span class="sp-stat"><i class="fa-solid fa-lines-leaning"></i> Words: <strong id="spWordCountText">0</strong></span>
+                            </div>
+                            <button class="btn btn-primary" id="btnSubmitSpeechForAnalysis">
+                                <i class="fa-solid fa-bolt"></i>
+                                <span>Run Complete NLP Analysis</span>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. TEXT ANALYZER VIEW -->
+                <section class="view-section" id="text-view">
+                    <div class="section-title-wrap">
+                        <div class="title-with-icon">
+                            <i class="fa-solid fa-file-pen title-icon icon-gradient-purple"></i>
+                            <div>
+                                <h2 class="section-heading">📝 Text Analyzer</h2>
+                                <p class="section-subtext">Enter or paste your Tanglish text. Our multi-layer bilingual parser extracts syntactic patterns and code-switching points.</p>
+                            </div>
+                        </div>
+                        <div class="live-status-pill">
+                            <span class="live-dot"></span>
+                            <span>⚡ Live NLP Active</span>
+                        </div>
+                    </div>
+
+                    <div class="text-analyzer-wrapper">
+                        <!-- MAIN TEXTAREA CARD -->
+                        <div class="text-input-card glass-card">
+                            <div class="textarea-header">
+                                <div class="textarea-title-wrap">
+                                    <i class="fa-solid fa-keyboard"></i>
+                                    <span>Enter Tanglish Text</span>
+                                </div>
+                                <div class="textarea-quick-tools">
+                                    <button class="tool-btn" id="pasteTextBtn" title="Paste from clipboard">
+                                        <i class="fa-solid fa-paste"></i> Paste
+                                    </button>
+                                    <button class="tool-btn" id="clearTextBtn" title="Clear text area">
+                                        <i class="fa-solid fa-xmark"></i> Clear
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="textarea-body-wrap">
+                                <textarea id="tanglishTextInput" class="main-tanglish-textarea" placeholder="Type your Tamil + English sentence here... (e.g. Naan exam-ku prepare pannitu irukken but romba tired-aa irukku.)"></textarea>
+                            </div>
+
+                            <!-- LIVE TEXT ANALYSIS STATS STRIP -->
+                            <div class="live-analysis-strip">
+                                <div class="live-stat-item">
+                                    <span class="live-lbl">Words</span>
+                                    <span class="live-val" id="liveWordCount">0</span>
+                                </div>
+                                <div class="live-stat-divider"></div>
+                                <div class="live-stat-item">
+                                    <span class="live-lbl">Tamil Words</span>
+                                    <span class="live-val color-pink" id="liveTamilCount">0</span>
+                                </div>
+                                <div class="live-stat-divider"></div>
+                                <div class="live-stat-item">
+                                    <span class="live-lbl">English Words</span>
+                                    <span class="live-val color-purple" id="liveEnglishCount">0</span>
+                                </div>
+                                <div class="live-stat-divider"></div>
+                                <div class="live-stat-item">
+                                    <span class="live-lbl">Filler Words</span>
+                                    <span class="live-val color-amber" id="liveFillerCount">0</span>
+                                </div>
+                                <div class="live-stat-divider"></div>
+                                <div class="live-stat-item">
+                                    <span class="live-lbl">Characters</span>
+                                    <span class="live-val" id="liveCharCount">0</span>
+                                </div>
+                            </div>
+
+                            <div class="textarea-footer">
+                                <div class="sample-pill-tray">
+                                    <span class="tray-label">Quick test:</span>
+                                    <button class="tray-pill" data-text="Naan tomorrow college-ku poganum because enakku project work irukku.">College Project</button>
+                                    <button class="tray-pill" data-text="Actually enakku indha project romba interesting-aa irukku, full-aa concentrate pannanum.">Project Feedback</button>
+                                    <button class="tray-pill" data-text="Innaikku interview romba well-aa pochu, questions ellam easy-aa answer panniten.">Job Interview</button>
+                                </div>
+
+                                <button class="btn btn-analyze-text primary-glow" id="analyzeTextSubmitBtn">
+                                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                    <span>✨ Analyze Text</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 4. ANALYTICS & NLP RESULTS VIEW -->
+                <section class="view-section" id="analytics-view">
+                    
+                    <!-- Section Header -->
+                    <div class="section-title-wrap">
+                        <div class="title-with-icon">
+                            <i class="fa-solid fa-chart-line title-icon icon-gradient-blue"></i>
+                            <div>
+                                <h2 class="section-heading">📊 NLP & Speech Intelligence</h2>
+                                <p class="section-subtext">Detailed linguistic breakdown, code-mixing topology, and vocabulary distribution</p>
+                            </div>
+                        </div>
+                        <div class="results-actions">
+                            <button class="btn-pill" id="exportReportBtn" title="Export as Report">
+                                <i class="fa-solid fa-download"></i> Export Analysis
+                            </button>
+                            <button class="btn-pill" id="printReportBtn" title="Print Report">
+                                <i class="fa-solid fa-print"></i> Print
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ANALYZED SENTENCE DISPLAY & HIGHLIGHTED TOKEN STREAM -->
+                    <div class="token-stream-card glass-card">
+                        <div class="token-card-header">
+                            <div class="token-title-group">
+                                <i class="fa-solid fa-tags"></i>
+                                <span>Code-Switching Token Sequence Visualizer</span>
+                            </div>
+                            <div class="token-legend">
+                                <span class="legend-chip chip-tamil"><span class="dot"></span> Tamil</span>
+                                <span class="legend-chip chip-english"><span class="dot"></span> English</span>
+                                <span class="legend-chip chip-mixed"><span class="dot"></span> Mixed (Suffix)</span>
+                                <span class="legend-chip chip-filler"><span class="dot"></span> Filler Word</span>
+                                <span class="legend-chip chip-repeat"><span class="dot"></span> Repeated</span>
+                            </div>
+                        </div>
+                        <div class="token-stream-content" id="tokenStreamContainer">
+                            <!-- Tokens injected via JS -->
+                        </div>
+                    </div>
+
+                    <!-- CORE LANGUAGE ANALYSIS METRICS (4 CARDS) -->
+                    <div class="analytics-metrics-grid">
+                        <div class="metric-card glass-card border-pink">
+                            <div class="metric-icon-box bg-pink-glow">
+                                <i class="fa-solid fa-language"></i>
+                            </div>
+                            <div class="metric-info">
+                                <span class="metric-title">Tamil Words</span>
+                                <div class="metric-main-val">
+                                    <span class="metric-number" id="resultTamilWords">8</span>
+                                    <span class="metric-badge" id="resultTamilPercent">50%</span>
+                                </div>
+                                <span class="metric-desc">Native & Transliterated Tamil terms</span>
+                            </div>
+                        </div>
+
+                        <div class="metric-card glass-card border-purple">
+                            <div class="metric-icon-box bg-purple-glow">
+                                <i class="fa-solid fa-font"></i>
+                            </div>
+                            <div class="metric-info">
+                                <span class="metric-title">English Words</span>
+                                <div class="metric-main-val">
+                                    <span class="metric-number" id="resultEnglishWords">5</span>
+                                    <span class="metric-badge" id="resultEnglishPercent">31%</span>
+                                </div>
+                                <span class="metric-desc">Pure English vocabulary words</span>
+                            </div>
+                        </div>
+
+                        <div class="metric-card glass-card border-cyan">
+                            <div class="metric-icon-box bg-cyan-glow">
+                                <i class="fa-solid fa-code-merge"></i>
+                            </div>
+                            <div class="metric-info">
+                                <span class="metric-title">Mixed Words</span>
+                                <div class="metric-main-val">
+                                    <span class="metric-number" id="resultMixedWords">3</span>
+                                    <span class="metric-badge" id="resultMixedPercent">19%</span>
+                                </div>
+                                <span class="metric-desc">English roots with Tamil suffixes</span>
+                            </div>
+                        </div>
+
+                        <div class="metric-card glass-card border-blue">
+                            <div class="metric-icon-box bg-blue-glow">
+                                <i class="fa-solid fa-calculator"></i>
+                            </div>
+                            <div class="metric-info">
+                                <span class="metric-title">Total Words</span>
+                                <div class="metric-main-val">
+                                    <span class="metric-number" id="resultTotalWords">16</span>
+                                    <span class="metric-badge-blue" id="resultTotalChars">98 chars</span>
+                                </div>
+                                <span class="metric-desc">Total processed input tokens</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TWO-COLUMN NLP ANALYSIS ROW -->
+                    <div class="analytics-row-split">
+                        
+                        <!-- LEFT COLUMN: CODE-SWITCHING & FILLERS -->
+                        <div class="analytics-col">
+                            
+                            <!-- 1. CODE-SWITCHING ANALYSIS CARD -->
+                            <div class="analysis-panel-card glass-card">
+                                <div class="panel-header">
+                                    <div class="panel-title-wrap">
+                                        <i class="fa-solid fa-arrows-split-up-and-left icon-gradient-pink"></i>
+                                        <div>
+                                            <h3 class="panel-title">🔄 Code-Switching Analysis</h3>
+                                            <span class="panel-subtitle">Syntactic alternation between Tamil and English within sentences</span>
+                                        </div>
+                                    </div>
+                                    <span class="cs-index-badge" id="cmiScoreBadge">CMI: 42%</span>
+                                </div>
+
+                                <p class="panel-explainer">
+                                    “Code-switching refers to switching between Tamil and English within the same sentence.”
+                                </p>
+
+                                <div class="cs-stats-row">
+                                    <div class="cs-stat-box">
+                                        <span class="cs-lbl">Switching Count</span>
+                                        <span class="cs-val" id="resultSwitchCount">4</span>
+                                        <span class="cs-hint">Transitions detected</span>
+                                    </div>
+                                    <div class="cs-stat-box">
+                                        <span class="cs-lbl">Switch Density</span>
+                                        <span class="cs-val" id="resultSwitchDensity">0.25 / word</span>
+                                        <span class="cs-hint">Frequency score</span>
+                                    </div>
+                                </div>
+
+                                <!-- Language Ratio Bar -->
+                                <div class="language-ratio-section">
+                                    <div class="ratio-labels">
+                                        <span class="ratio-label-tamil"><i class="fa-solid fa-circle"></i> Tamil: <strong id="ratioTamilText">60%</strong></span>
+                                        <span class="ratio-label-english"><i class="fa-solid fa-circle"></i> English: <strong id="ratioEnglishText">40%</strong></span>
+                                    </div>
+                                    <div class="ratio-progress-track">
+                                        <div class="ratio-bar-tamil" id="ratioBarTamil" style="width: 60%;"></div>
+                                        <div class="ratio-bar-english" id="ratioBarEnglish" style="width: 40%;"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Dynamic Transition Flow Example -->
+                                <div class="transition-flow-box">
+                                    <span class="flow-title">Transition Sequence:</span>
+                                    <div class="flow-pills-row" id="transitionPillSequence">
+                                        <span class="flow-pill pill-ta">Tamil</span>
+                                        <i class="fa-solid fa-arrow-right flow-arrow"></i>
+                                        <span class="flow-pill pill-en">English</span>
+                                        <i class="fa-solid fa-arrow-right flow-arrow"></i>
+                                        <span class="flow-pill pill-ta">Tamil</span>
+                                        <i class="fa-solid fa-arrow-right flow-arrow"></i>
+                                        <span class="flow-pill pill-en">English</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 2. FILLER WORD DETECTION CARD -->
+                            <div class="analysis-panel-card glass-card">
+                                <div class="panel-header">
+                                    <div class="panel-title-wrap">
+                                        <i class="fa-solid fa-filter-circle-xmark icon-gradient-amber"></i>
+                                        <div>
+                                            <h3 class="panel-title">Filler Words</h3>
+                                            <span class="panel-subtitle">English & Tanglish conversational fillers detected</span>
+                                        </div>
+                                    </div>
+                                    <div class="filler-count-pill" id="fillerCountPill">
+                                        <span id="resultFillerTotal">7 detected</span>
+                                    </div>
+                                </div>
+
+                                <p class="panel-explainer">
+                                    Detects English fillers (<em>um, uh, actually, basically, like, you know, so, hmm, ah</em>) and Tanglish fillers (<em>apdi, seri, vandhu, aparam, paatha</em>).
+                                </p>
+
+                                <div class="filler-pills-container" id="fillerPillsContainer">
+                                    <span class="filler-pill"><span class="filler-word">actually</span> <span class="filler-freq">× 2</span></span>
+                                    <span class="filler-pill"><span class="filler-word">like</span> <span class="filler-freq">× 3</span></span>
+                                    <span class="filler-pill"><span class="filler-word">hmm</span> <span class="filler-freq">× 2</span></span>
+                                </div>
+                            </div>
+
+                            <!-- 3. REPEATED WORD ANALYSIS CARD -->
+                            <div class="analysis-panel-card glass-card">
+                                <div class="panel-header">
+                                    <div class="panel-title-wrap">
+                                        <i class="fa-solid fa-repeat icon-gradient-purple"></i>
+                                        <div>
+                                            <h3 class="panel-title">Repeated Words</h3>
+                                            <span class="panel-subtitle">Identifies vocal hesitation and word redundancy</span>
+                                        </div>
+                                    </div>
+                                    <span class="repeat-badge" id="repeatedWordsBadge">2 Words Repeated</span>
+                                </div>
+
+                                <div class="repeat-words-list" id="repeatWordsContainer">
+                                    <!-- Injected dynamically -->
+                                    <div class="repeat-item">
+                                        <div class="repeat-word-info">
+                                            <span class="repeat-word">actually</span>
+                                            <span class="repeat-count">3 times</span>
+                                        </div>
+                                        <div class="repeat-bar-track">
+                                            <div class="repeat-bar-fill" style="width: 75%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="repeat-item">
+                                        <div class="repeat-word-info">
+                                            <span class="repeat-word">naan</span>
+                                            <span class="repeat-count">2 times</span>
+                                        </div>
+                                        <div class="repeat-bar-track">
+                                            <div class="repeat-bar-fill" style="width: 50%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- RIGHT COLUMN: SPEED, SENTENCE, SUMMARY, SUGGESTIONS & INSIGHTS -->
+                        <div class="analytics-col">
+
+                            <!-- 4. SPEAKING SPEED & SENTENCE STATISTICS CARD -->
+                            <div class="analysis-panel-card glass-card">
+                                <div class="panel-header">
+                                    <div class="panel-title-wrap">
+                                        <i class="fa-solid fa-gauge-high icon-gradient-cyan"></i>
+                                        <div>
+                                            <h3 class="panel-title">Speaking Speed & Sentences</h3>
+                                            <span class="panel-subtitle">Acoustic pacing & syntactic sentence metrics</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="speed-and-sent-grid">
+                                    <!-- Speaking Speed Box -->
+                                    <div class="speed-meter-box">
+                                        <span class="meter-title">Speaking Speed</span>
+                                        <div class="speed-display">
+                                            <span class="speed-wpm-val" id="resultSpeedWpm">132</span>
+                                            <span class="speed-wpm-unit">WPM</span>
+                                        </div>
+                                        <div class="speed-status-indicator normal" id="speedStatusPill">
+                                            <span class="status-circle"></span>
+                                            <span id="speedCategoryText">🟢 Normal Pace</span>
+                                        </div>
+                                        <span class="speed-disclaimer">* Calculated from speech duration / word count.</span>
+                                    </div>
+
+                                    <!-- Sentence Statistics Box -->
+                                    <div class="sentence-stats-box">
+                                        <span class="meter-title">Sentence Statistics</span>
+                                        <div class="sentence-stat-row">
+                                            <span>Total Sentences:</span>
+                                            <strong id="statTotalSentences">2</strong>
+                                        </div>
+                                        <div class="sentence-stat-row">
+                                            <span>Avg Words / Sentence:</span>
+                                            <strong id="statAvgWordsSentence">8.0</strong>
+                                        </div>
+                                        <div class="sentence-stat-row">
+                                            <span>Longest Sentence:</span>
+                                            <strong id="statLongestSentence">10 words</strong>
+                                        </div>
+                                        <div class="sentence-stat-row">
+                                            <span>Shortest Sentence:</span>
+                                            <strong id="statShortestSentence">6 words</strong>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 5. TEXT SUMMARY CARD -->
+                            <div class="analysis-panel-card glass-card">
+                                <div class="panel-header">
+                                    <div class="panel-title-wrap">
+                                        <i class="fa-solid fa-align-left icon-gradient-pink"></i>
+                                        <div>
+                                            <h3 class="panel-title">📝 Text Summary</h3>
+                                            <span class="panel-subtitle">AI Extractive Semantic Context & Intent</span>
+                                        </div>
+                                    </div>
+                                    <span class="summary-domain-badge" id="summaryDomainBadge">Academic / College</span>
+                                </div>
+
+                                <div class="summary-body-box">
+                                    <p class="summary-text" id="resultSummaryText">
+                                        “User is discussing their college project work and upcoming activities.”
+                                    </p>
+                                    <div class="summary-keywords-row" id="summaryKeywordsRow">
+                                        <span class="kw-tag"><i class="fa-solid fa-hashtag"></i> college</span>
+                                        <span class="kw-tag"><i class="fa-solid fa-hashtag"></i> project</span>
+                                        <span class="kw-tag"><i class="fa-solid fa-hashtag"></i> tomorrow</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 6. CORRECTION & POLISH SUGGESTIONS -->
+                            <div class="analysis-panel-card glass-card">
+                                <div class="panel-header">
+                                    <div class="panel-title-wrap">
+                                        <i class="fa-solid fa-wand-magic-sparkles icon-gradient-purple"></i>
+                                        <div>
+                                            <h3 class="panel-title">✨ Improve Your Sentence</h3>
+                                            <span class="panel-subtitle">AI Refinement: Tanglish → Fluent English & Clean Tanglish</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="suggestion-comparison-box">
+                                    <!-- Input -->
+                                    <div class="suggestion-block">
+                                        <span class="sugg-label input-lbl"><i class="fa-solid fa-arrow-right-to-bracket"></i> Tanglish Input</span>
+                                        <p class="sugg-content" id="suggInputText">“Naan tomorrow college-ku poganum.”</p>
+                                    </div>
+
+                                    <!-- Improved English -->
+                                    <div class="suggestion-block highlight-en">
+                                        <div class="sugg-header-row">
+                                            <span class="sugg-label english-lbl"><i class="fa-solid fa-sparkles"></i> Improved English</span>
+                                            <button class="btn-copy-mini" id="copyImprovedEnBtn" title="Copy English">
+                                                <i class="fa-solid fa-copy"></i>
+                                            </button>
+                                        </div>
+                                        <p class="sugg-content" id="suggImprovedEnglish">“I need to go to college tomorrow.”</p>
+                                    </div>
+
+                                    <!-- Natural Pure Tamil / Clean Tanglish -->
+                                    <div class="suggestion-block highlight-ta">
+                                        <div class="sugg-header-row">
+                                            <span class="sugg-label tamil-lbl"><i class="fa-solid fa-leaf"></i> Natural Tanglish / Tamil</span>
+                                            <button class="btn-copy-mini" id="copyNaturalTaBtn" title="Copy Tanglish">
+                                                <i class="fa-solid fa-copy"></i>
+                                            </button>
+                                        </div>
+                                        <p class="sugg-content" id="suggNaturalTanglish">“Naan nalaikku college-ku poganum.”</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 7. COMMUNICATION INSIGHTS CARD -->
+                            <div class="analysis-panel-card glass-card">
+                                <div class="panel-header">
+                                    <div class="panel-title-wrap">
+                                        <i class="fa-solid fa-lightbulb icon-gradient-amber"></i>
+                                        <div>
+                                            <h3 class="panel-title">💡 Communication Insights</h3>
+                                            <span class="panel-subtitle">AI-driven fluency evaluation & actionable tips</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="score-and-insights-wrap">
+                                    <!-- Score Circle Display -->
+                                    <div class="comm-score-card">
+                                        <div class="score-gauge-wrap">
+                                            <div class="score-number" id="resultCommScore">78</div>
+                                            <div class="score-max">/ 100</div>
+                                        </div>
+                                        <span class="score-label">AI-based estimated communication score</span>
+                                    </div>
+
+                                    <!-- Insights Feedback Checklist -->
+                                    <div class="insights-feedback-list" id="insightsFeedbackList">
+                                        <div class="insight-item positive">
+                                            <i class="fa-solid fa-circle-check insight-icon"></i>
+                                            <span>Good use of conversational language</span>
+                                        </div>
+                                        <div class="insight-item positive">
+                                            <i class="fa-solid fa-circle-check insight-icon"></i>
+                                            <span>Balanced Tamil-English usage</span>
+                                        </div>
+                                        <div class="insight-item warning">
+                                            <i class="fa-solid fa-triangle-exclamation insight-icon"></i>
+                                            <span>Moderate filler words detected</span>
+                                        </div>
+                                        <div class="insight-item warning">
+                                            <i class="fa-solid fa-triangle-exclamation insight-icon"></i>
+                                            <span>Some repeated words detected</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- CHARTS & VISUAL ANALYTICS SECTION -->
+                    <div class="section-title-wrap mt-4">
+                        <div class="title-with-icon">
+                            <i class="fa-solid fa-chart-pie title-icon icon-gradient-purple"></i>
+                            <div>
+                                <h3 class="section-heading">Visual NLP Charts & Graphs</h3>
+                                <p class="section-subtext">Interactive Chart.js visualizations for language distribution, filler frequency and switching flow</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="charts-dashboard-grid">
+                        <!-- Chart 1: Language Distribution -->
+                        <div class="chart-card glass-card">
+                            <div class="chart-header">
+                                <div>
+                                    <h4 class="chart-title">Language Distribution</h4>
+                                    <span class="chart-subtitle">Tamil vs English vs Mixed</span>
+                                </div>
+                                <i class="fa-solid fa-pie-chart chart-type-icon"></i>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="chartLangDist"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Chart 2: Filler Word Frequency -->
+                        <div class="chart-card glass-card">
+                            <div class="chart-header">
+                                <div>
+                                    <h4 class="chart-title">Filler Word Frequency</h4>
+                                    <span class="chart-subtitle">Breakdown of conversational crutches</span>
+                                </div>
+                                <i class="fa-solid fa-chart-bar chart-type-icon"></i>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="chartFillers"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Chart 3: Code-Switching Sequence -->
+                        <div class="chart-card glass-card">
+                            <div class="chart-header">
+                                <div>
+                                    <h4 class="chart-title">Code-Switching Topology</h4>
+                                    <span class="chart-subtitle">Language transitions along token timeline</span>
+                                </div>
+                                <i class="fa-solid fa-chart-line chart-type-icon"></i>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="chartSwitchingFlow"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Chart 4: Linguistic Performance Radar -->
+                        <div class="chart-card glass-card">
+                            <div class="chart-header">
+                                <div>
+                                    <h4 class="chart-title">NLP Performance Radar</h4>
+                                    <span class="chart-subtitle">Fluency, Diversity & Structure</span>
+                                </div>
+                                <i class="fa-solid fa-spider chart-type-icon"></i>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="chartRadarMetrics"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                </section>
+
+                <!-- 5. HISTORY VIEW -->
+                <section class="view-section" id="history-view">
+                    <div class="section-title-wrap">
+                        <div class="title-with-icon">
+                            <i class="fa-solid fa-clock-rotate-left title-icon icon-gradient-pink"></i>
+                            <div>
+                                <h2 class="section-heading">📚 Analysis History</h2>
+                                <p class="section-subtext">Review and reload your past speech and text analysis records from LocalStorage</p>
+                            </div>
+                        </div>
+                        <div class="history-actions">
+                            <button class="btn btn-secondary" id="clearAllHistoryBtn">
+                                <i class="fa-solid fa-trash-can"></i>
+                                <span>Clear History</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- History List Card -->
+                    <div class="history-container glass-card">
+                        <div class="history-filter-bar">
+                            <div class="history-search-wrap">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="historySearchInput" placeholder="Search transcript text or tags...">
+                            </div>
+                            <span class="history-stats-badge" id="historyCountSummary">0 sessions saved</span>
+                        </div>
+
+                        <div class="history-list" id="historyListContainer">
+                            <!-- Items injected via JS -->
+                            <div class="empty-history-state" id="emptyHistoryState">
+                                <div class="empty-icon-wrap">
+                                    <i class="fa-solid fa-inbox"></i>
+                                </div>
+                                <h3>No Analysis History Yet</h3>
+                                <p>Record speech or analyze text to save sessions here automatically.</p>
+                                <button class="btn btn-primary" onclick="document.getElementById('navText').click()">
+                                    <span>Try an Analysis Now</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 6. SETTINGS VIEW -->
+                <section class="view-section" id="settings-view">
+                    <div class="section-title-wrap">
+                        <div class="title-with-icon">
+                            <i class="fa-solid fa-sliders title-icon icon-gradient-purple"></i>
+                            <div>
+                                <h2 class="section-heading">⚙️ Engine Settings & Preferences</h2>
+                                <p class="section-subtext">Fine-tune the speech recognition sensitivity, NLP thresholds, and visual appearance</p>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" id="saveSettingsBtn">
+                            <i class="fa-solid fa-floppy-disk"></i>
+                            <span>Save Preferences</span>
+                        </button>
+                    </div>
+
+                    <div class="settings-grid">
+                        <!-- Speech Recognition Settings -->
+                        <div class="settings-card glass-card">
+                            <div class="settings-card-header">
+                                <i class="fa-solid fa-microphone-gear"></i>
+                                <h3>Speech Recognition Engine</h3>
+                            </div>
+                            <div class="settings-group">
+                                <label class="setting-item">
+                                    <div class="setting-text">
+                                        <span class="setting-title">Acoustic Language Accent</span>
+                                        <span class="setting-desc">Primary dialect for Web Speech API transcription</span>
+                                    </div>
+                                    <select class="setting-select" id="settingSpeechLang">
+                                        <option value="en-IN" selected>English (India) - en-IN</option>
+                                        <option value="ta-IN">Tamil (India) - ta-IN</option>
+                                        <option value="en-US">English (US) - en-US</option>
+                                    </select>
+                                </label>
+
+                                <label class="setting-item">
+                                    <div class="setting-text">
+                                        <span class="setting-title">Continuous Recognition</span>
+                                        <span class="setting-desc">Keep transcribing until explicitly stopped</span>
+                                    </div>
+                                    <input type="checkbox" class="toggle-switch" id="settingContinuousSpeech" checked>
+                                </label>
+
+                                <label class="setting-item">
+                                    <div class="setting-text">
+                                        <span class="setting-title">Auto-Analyze on Recording Stop</span>
+                                        <span class="setting-desc">Instantly trigger NLP evaluation when recording stops</span>
+                                    </div>
+                                    <input type="checkbox" class="toggle-switch" id="settingAutoAnalyze" checked>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- NLP & Scoring Sensitivity -->
+                        <div class="settings-card glass-card">
+                            <div class="settings-card-header">
+                                <i class="fa-solid fa-brain"></i>
+                                <h3>NLP & Sensitivity Tuning</h3>
+                            </div>
+                            <div class="settings-group">
+                                <label class="setting-item">
+                                    <div class="setting-text">
+                                        <span class="setting-title">Target Speaking Speed (WPM)</span>
+                                        <span class="setting-desc">Ideal conversational rate for normal score</span>
+                                    </div>
+                                    <span class="range-val-badge" id="targetWpmVal">130 WPM</span>
+                                </label>
+                                <input type="range" class="setting-range" id="settingTargetWpm" min="90" max="180" value="130">
+
+                                <label class="setting-item">
+                                    <div class="setting-text">
+                                        <span class="setting-title">Strict Filler Word Penalty</span>
+                                        <span class="setting-desc">Penalize frequent colloquial fillers in communication score</span>
+                                    </div>
+                                    <input type="checkbox" class="toggle-switch" id="settingStrictFillers" checked>
+                                </label>
+
+                                <label class="setting-item">
+                                    <div class="setting-text">
+                                        <span class="setting-title">Auto-Save History to LocalStorage</span>
+                                        <span class="setting-desc">Persist all completed analyses on this device</span>
+                                    </div>
+                                    <input type="checkbox" class="toggle-switch" id="settingAutoSaveHistory" checked>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- UI & Aesthetics -->
+                        <div class="settings-card glass-card">
+                            <div class="settings-card-header">
+                                <i class="fa-solid fa-palette"></i>
+                                <h3>Aesthetics & Visual FX</h3>
+                            </div>
+                            <div class="settings-group">
+                                <label class="setting-item">
+                                    <div class="setting-text">
+                                        <span class="setting-title">Background Particle Field</span>
+                                        <span class="setting-desc">Interactive floating canvas particles</span>
+                                    </div>
+                                    <input type="checkbox" class="toggle-switch" id="settingParticlesToggle" checked>
+                                </label>
+
+                                <label class="setting-item">
+                                    <div class="setting-text">
+                                        <span class="setting-title">Neon Card Glows</span>
+                                        <span class="setting-desc">Vibrant multi-gradient borders and shadows</span>
+                                    </div>
+                                    <input type="checkbox" class="toggle-switch" id="settingGlowToggle" checked>
+                                </label>
+
+                                <label class="setting-item">
+                                    <div class="setting-text">
+                                        <span class="setting-title">Sound Effects (Beeps)</span>
+                                        <span class="setting-desc">Subtle Web Audio feedback tones on recording</span>
+                                    </div>
+                                    <input type="checkbox" class="toggle-switch" id="settingSoundFxToggle" checked>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- About the Project -->
+                        <div class="settings-card glass-card">
+                            <div class="settings-card-header">
+                                <i class="fa-solid fa-circle-info"></i>
+                                <h3>About Tanglish NLP Engine</h3>
+                            </div>
+                            <div class="about-card-body">
+                                <p><strong>Tanglish Speech Analyzer</strong> is an advanced client-side Natural Language Processing and Acoustic Speech Analyzer designed specifically for Tamil-English code-mixed communication.</p>
+                                <ul class="about-points">
+                                    <li><i class="fa-solid fa-check"></i> Zero Backend Required & 100% Privacy-Preserving</li>
+                                    <li><i class="fa-solid fa-check"></i> Client-side Morphological Tanglish Parsing</li>
+                                    <li><i class="fa-solid fa-check"></i> Web Speech API + Web Audio Oscilloscope</li>
+                                </ul>
+                                <div class="about-version">
+                                    <span>Version 2.4.0 (AI Edition)</span>
+                                    <span class="badge-pill">Build 2026.1</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div> <!-- /content-container -->
+        </main>
+    </div> <!-- /app-wrapper -->
+
+    <!-- LOADING OVERLAY ANIMATION -->
+    <div class="analysis-loading-overlay" id="analysisLoadingOverlay">
+        <div class="loader-modal glass-card">
+            <div class="ai-loader-animation">
+                <div class="loader-circle circle-1"></div>
+                <div class="loader-circle circle-2"></div>
+                <div class="loader-circle circle-3"></div>
+                <div class="loader-core">
+                    <i class="fa-solid fa-brain"></i>
+                </div>
+            </div>
+            <h3 class="loader-title">Analyzing your speech...</h3>
+            <p class="loader-subtitle" id="loaderStatusText">Parsing Tamil & English lexical patterns</p>
+            <div class="loader-progress-bar">
+                <div class="loader-progress-fill" id="loaderProgressFill"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main JavaScript Logic -->
+    <script src="script.js"></script>
+</body>
+</html>
